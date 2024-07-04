@@ -7,14 +7,14 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 
-const signUpForm = z.object({
+const SignUpForm = z.object({
   restaurantName: z.string(),
   manegerName: z.string(),
   phone: z.string(),
   email: z.string().email(),
 });
 
-type signUpForm = z.infer<typeof signUpForm>;
+type SignUpForm = z.infer<typeof SignUpForm>;
 
 export function SignUp() {
   const navigate = useNavigate();
@@ -23,12 +23,10 @@ export function SignUp() {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<signUpForm>();
+  } = useForm<SignUpForm>();
 
-  async function handleSignUp(data: signUpForm) {
+  async function handleSignUp(data: SignUpForm) {
     try {
-      console.log(data);
-
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       toast.success("Restaurante cadastrado com sucesso!", {
