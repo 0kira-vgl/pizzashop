@@ -10,7 +10,7 @@ export function App() {
       <ThemeProvider storageKey="pizzashop-theme" defaultTheme="dark">
         <Helmet titleTemplate="%s | pizza.shop" />
         <Toaster richColors closeButton />
-        <RouterProvider router={router} />;
+        <RouterProvider router={router} />
       </ThemeProvider>
     </HelmetProvider>
   );
