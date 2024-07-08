@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 const SignUpForm = z.object({
   restaurantName: z.string(),
@@ -88,6 +89,9 @@ export function SignUp() {
             </div>
 
             <Button disabled={isSubmitting} type="submit" className="w-full">
+              {isSubmitting && (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Finalizar cadastro
             </Button>
 

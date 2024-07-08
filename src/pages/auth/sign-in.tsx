@@ -6,6 +6,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
+import { signIn } from "@/api/singIn";
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -20,9 +23,13 @@ export function SignIn() {
     formState: { isSubmitting },
   } = useForm<signInForm>();
 
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+  });
+
   async function handleSignIn(data: signInForm) {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await authenticate({ email: data.email });
 
       toast.success("Enviamos um link de autenticação para o seu e-mail.", {
         action: {
@@ -60,6 +67,9 @@ export function SignIn() {
             </div>
 
             <Button disabled={isSubmitting} type="submit" className="w-full">
+              {isSubmitting && (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Acessar painel
             </Button>
           </form>
