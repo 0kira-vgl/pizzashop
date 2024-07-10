@@ -23,7 +23,7 @@ import { toast } from "sonner";
 
 const storeProfileSchema = z.object({
   name: z.string().min(1),
-  description: z.string(),
+  description: z.string().nullable(),
 });
 
 type StoreProfileSchema = z.infer<typeof storeProfileSchema>;
@@ -49,19 +49,36 @@ export function StoreProfileDialog() {
     },
   });
 
+  function updateManagedRestaurantCache({
+    name,
+    description,
+  }: StoreProfileSchema) {
+    const cached = queryClient.getQueryData<GetManagedRestaurant>([
+      "managed-restaurant",
+    ]);
+
+    if (cached) {
+      queryClient.setQueryData<GetManagedRestaurant>(["managed-restaurant"], {
+        ...cached,
+        name,
+        description,
+      });
+    }
+
+    return { cached };
+  }
+
   const { mutateAsync: updateProfileFn } = useMutation({
     mutationFn: updateProfile,
-    onSuccess(_, { name, description }) {
-      const cached = queryClient.getQueryData<GetManagedRestaurant>([
-        "managed-restaurant",
-      ]);
+    onMutate({ name, description }) {
+      const { cached } = updateManagedRestaurantCache({ name, description });
 
-      if (cached) {
-        queryClient.setQueryData<GetManagedRestaurant>(["managed-restaurant"], {
-          ...cached,
-          name,
-          description,
-        });
+      return { previusProfile: cached };
+    },
+
+    onError(_, __, context) {
+      if (context?.previusProfile) {
+        updateManagedRestaurantCache(context.previusProfile);
       }
     },
   });
@@ -73,9 +90,9 @@ export function StoreProfileDialog() {
         description: data.description,
       });
 
-      toast.success("Perfl atualizado com sucesso!");
-    } catch (error) {
-      toast.error("Falha ao atualizar o perfil, tente novamente!");
+      toast.success("Perfil atualizado com sucesso!");
+    } catch {
+      toast.error("Falha ao atualizar o perfil, tente novamente");
     }
   }
 
