@@ -1,32 +1,45 @@
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-} from "@/components/ui/table";
-import { Helmet } from "react-helmet-async";
-import { OrderTableRow } from "./orderTableRow";
-import { OrderTableFilters } from "./orderTableFilters";
-import { Pagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
-import { getOrders } from "@/api/getOrders";
+import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 
+import { getOrders } from "@/api/getOrders";
+import { Pagination } from "@/components/pagination";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { OrderTableFilters } from "./orderTableFilters";
+import { OrderTableRow } from "./orderTableRow";
+
 export function Orders() {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const orderId = searchParams.get("orderId");
+  const customerName = searchParams.get("customerName");
+  const status = searchParams.get("status");
+
   const pageIndex = z.coerce
     .number()
     .transform((page) => page - 1)
     .parse(searchParams.get("page") ?? "1");
 
   const { data: result } = useQuery({
-    queryKey: ["orders", pageIndex],
-    queryFn: () => getOrders({ pageIndex }),
+    queryKey: ["orders", pageIndex, orderId, customerName, status],
+    queryFn: () =>
+      getOrders({
+        pageIndex,
+        orderId,
+        customerName,
+        status: status === "all" ? null : status,
+      }),
   });
 
-  function hadlePaginate(pageIndex: number) {
+  function handlePaginate(pageIndex: number) {
     setSearchParams((state) => {
       state.set("page", (pageIndex + 1).toString());
 
@@ -40,7 +53,6 @@ export function Orders() {
 
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Pedidos</h1>
-
         <div className="space-y-2.5">
           <OrderTableFilters />
 
@@ -69,7 +81,7 @@ export function Orders() {
 
           {result && (
             <Pagination
-              onPageChange={hadlePaginate}
+              onPageChange={handlePaginate}
               pageIndex={result.meta.pageIndex}
               totalCount={result.meta.totalCount}
               perPage={result.meta.perPage}
