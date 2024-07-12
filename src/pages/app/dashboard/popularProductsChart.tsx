@@ -1,5 +1,6 @@
 import { getPopularProducts } from "@/api/getPopularProducts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart } from "lucide-react";
 import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -22,7 +23,7 @@ const COLORS = [
 ];
 
 export function PopularProductsChart() {
-  const { data: popularProducts } = useQuery({
+  const { data: popularProducts, isLoading: isLoadingCard } = useQuery({
     queryKey: ["metrics", "popular-products"],
     queryFn: getPopularProducts,
   });
@@ -38,6 +39,8 @@ export function PopularProductsChart() {
         </div>
       </CardHeader>
       <CardContent>
+        {isLoadingCard && <Skeleton className="h-72 w-full" />}
+
         {popularProducts && (
           <ResponsiveContainer width="100%" height={240}>
             <PieChart style={{ fontSize: 12 }}>
@@ -88,7 +91,7 @@ export function PopularProductsChart() {
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index]}
-                      className="stroke-background hover:opacity-80 hover:transition"
+                      className="stroke-background outline-none hover:opacity-80 hover:transition focus:outline-none"
                     />
                   );
                 })}

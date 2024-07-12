@@ -1,10 +1,11 @@
 import { getMonthOrdersAmount } from "@/api/getMonthOrdersAmount";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Utensils } from "lucide-react";
 
 export function MonthOrdersAmountCard() {
-  const { data: monthsOrdersAmount } = useQuery({
+  const { data: monthsOrdersAmount, isLoading: isLoadingCard } = useQuery({
     queryFn: getMonthOrdersAmount,
     queryKey: ["metrics", "month-orders-amount"],
   });
@@ -16,6 +17,8 @@ export function MonthOrdersAmountCard() {
         <Utensils className="size-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
+        {isLoadingCard && <Skeleton className="h-10 w-full" />}
+
         {monthsOrdersAmount && (
           <>
             <span className="text-2xl font-bold tracking-tight">

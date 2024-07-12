@@ -1,10 +1,11 @@
 import { getMonthRevenue } from "@/api/getMonthRevenue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign } from "lucide-react";
 
 export function MonthRevenueCard() {
-  const { data: monthRevenue } = useQuery({
+  const { data: monthRevenue, isLoading: isLoadingCard } = useQuery({
     queryKey: ["metrics", "month-revenue"],
     queryFn: getMonthRevenue,
   });
@@ -18,6 +19,8 @@ export function MonthRevenueCard() {
         <DollarSign className="size-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
+        {isLoadingCard && <Skeleton className="h-10 w-full" />}
+
         {monthRevenue && (
           <>
             <span className="text-2xl font-bold tracking-tight">

@@ -3,9 +3,10 @@ import { Utensils } from "lucide-react";
 
 import { getDayOrdersAmount } from "@/api/getDayOrdersAmount";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function DayOrdersAmountCard() {
-  const { data: dayOrdersAmount } = useQuery({
+  const { data: dayOrdersAmount, isLoading: isLoadingCard } = useQuery({
     queryKey: ["metrics", "day-orders-amount"],
     queryFn: getDayOrdersAmount,
   });
@@ -17,6 +18,8 @@ export function DayOrdersAmountCard() {
         <Utensils className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
+        {isLoadingCard && <Skeleton className="h-10 w-full" />}
+
         {dayOrdersAmount && (
           <>
             <span className="text-2xl font-bold tracking-tight">

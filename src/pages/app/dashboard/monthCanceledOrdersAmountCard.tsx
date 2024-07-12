@@ -1,13 +1,15 @@
 import { getMonthCanceledOrdersAmount } from "@/api/getMonthCanceledOrdersAmount";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { DollarSign } from "lucide-react";
 
 export function MonthCanceledOrdersAmountCard() {
-  const { data: monthCanceledOrdersAmount } = useQuery({
-    queryKey: ["metrics", "month-canceled-orders-amount"],
-    queryFn: getMonthCanceledOrdersAmount,
-  });
+  const { data: monthCanceledOrdersAmount, isLoading: isLoadingCard } =
+    useQuery({
+      queryKey: ["metrics", "month-canceled-orders-amount"],
+      queryFn: getMonthCanceledOrdersAmount,
+    });
 
   return (
     <Card>
@@ -18,6 +20,8 @@ export function MonthCanceledOrdersAmountCard() {
         <DollarSign className="size-4 text-muted-foreground" />
       </CardHeader>
       <CardContent className="space-y-1">
+        {isLoadingCard && <Skeleton className="h-10 w-full" />}
+
         {monthCanceledOrdersAmount && (
           <>
             <span className="text-2xl font-bold tracking-tight">
