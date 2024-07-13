@@ -1,5 +1,11 @@
 import { getPopularProducts } from "@/api/getPopularProducts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { BarChart } from "lucide-react";
@@ -22,16 +28,20 @@ export function PopularProductsChart() {
 
   return (
     <Card className="col-span-3">
-      <CardHeader className="pb-8">
-        <div className="flex items-center justify-between">
+      <CardHeader className="flex-row items-center justify-between pb-8">
+        <div className="space-y-1">
           <CardTitle className="text-base font-medium">
             Produtos populares
           </CardTitle>
-          <BarChart className="size-4 text-muted-foreground" />
+          <CardDescription>Seus produtos populares</CardDescription>
+        </div>
+
+        <div className="flex items-center">
+          <BarChart className="size-5 text-muted-foreground" />
         </div>
       </CardHeader>
       <CardContent>
-        {isLoadingCard && <Skeleton className="h-72 w-full" />}
+        {isLoadingCard && <Skeleton className="h-64 w-full" />}
 
         {popularProducts && (
           <ResponsiveContainer width="100%" height={240}>

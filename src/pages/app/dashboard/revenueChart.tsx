@@ -63,7 +63,7 @@ export function RevenueChart() {
         </div>
       </CardHeader>
       <CardContent>
-        {isLoadingCard && <Skeleton className="h-72 w-full" />}
+        {isLoadingCard && <Skeleton className="h-64 w-full" />}
 
         {chartData && (
           <ResponsiveContainer width="100%" height={240}>
